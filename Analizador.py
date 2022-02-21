@@ -1,8 +1,5 @@
 
 
-
-from ssl import DefaultVerifyPaths
-
 from numpy import true_divide
 
 
@@ -24,7 +21,7 @@ cardinales = [":north" , ":south", ":east" , ":west"]
 giro = [":front" ,":back",  ":left" , ":right",":around"]
 par1="("
 par2 =")"
-palabras = ["defvar", "=" , "move" , "turn" , "put" , "pick" , "move-dir" , "run-dirs" , "move-face" , "skip"]
+palabras = ["defvar", "=" , "move" , "turn" ,"face", "put" , "pick" , "move-dir" , "run-dirs" , "move-face" , "skip"]
 BalChips =["Balloons" , "Chips"]
 condiciones = ["facing-p","can-put-p","can-pick-p","can-move-p","not"]
 estructurasDeControl = ["loop","repeat","defun", "if"]
@@ -90,7 +87,7 @@ def validarNombre(pal:str)->bool:
 
 
 
-#Validacion de combinaciones
+"""Validacion de combinaciones"""
 #Validacion de nombre seguido de numero
 def validarCombNombre_Num(comb:str)->bool:
     
@@ -128,7 +125,7 @@ print (validarCombNombre_O_Num("324HDEODL"))
 #Funciona
 
 #Validacion Ballons o chips
-def validarBal_O_Chips(comb:str)->bool:
+def validarCombBal_O_Chips(comb:str)->bool:
 
     if comb in alfabeto[BalChips]:
         return True
@@ -138,7 +135,7 @@ def validarBal_O_Chips(comb:str)->bool:
 #giro = [":front" ,":back",  ":left" , ":right",":around"]
 
 #Validacion left right around
-def validarLe_Ri_Ar(comb:str)->bool:
+def validarCombLe_Ri_Ar(comb:str)->bool:
     #   ojo revisar el slice
     if comb in alfabeto[giro[2:]]:
         return True
@@ -146,20 +143,20 @@ def validarLe_Ri_Ar(comb:str)->bool:
         return False
 
 #Validacion front back right left
-def validarFr_Ba_Ri_Le(comb:str)->bool:
+def validarCombFr_Ba_Ri_Le(comb:str)->bool:
     if comb in alfabeto[giro[:4]]:
         return True
     else:
         return False
 
 #Validacion Bal/Chips name/num
-##Pensar si meter aqui o en validacion comando
-def validacionBC_NamNum(comb:str)->bool:
+
+def validarCombBC_NamNum(comb:str)->bool:
     #Validacion que existe un espacio en el comando division de comando en dos
     spaceSplit = comb.split(" ")
     if (len(spaceSplit)==2):
         #Valida si lo de la izquierda es Bal/Chips y si derecha es Nom/Num
-        val1 =validarBal_O_Chips(spaceSplit[0])
+        val1 =validarCombBal_O_Chips(spaceSplit[0])
         val2 = validarCombNombre_O_Num(spaceSplit[1])
         #Valida si lo de la izquierda esBal/CVhips y si lo derecha es Nom/Num si lo es True
         if (val1 ==True) and (val2==True):
@@ -169,15 +166,23 @@ def validacionBC_NamNum(comb:str)->bool:
 
     else: 
         return False
+#Validacion nam/num" " front/right/left/back
+def validarCombNomNum_FrRiLeBa(comb:str)->bool:
+    #Validacion que existe un espacio en el comando division de comando en dos
+    spaceSplit = comb.split(" ")
+    if (len(spaceSplit)==2):
+        #Valida si lo de la izquierda es Nom/Num y si derecha es FrRiLeBa
+        val1 =validarCombNombre_O_Num(spaceSplit[0])
+        val2 = validarCombFr_Ba_Ri_Le(spaceSplit[1])
+#Valida si lo de la izquierda es Nom/Num y si derecha es FrRiLeBa si lo es True
+        if (val1 ==True) and (val2==True):
+                return True
+        else: 
+            return False
 
+    else: 
+        return False
 
-
-
-def validarCombinaciones(comb:str):
-
-    combinaciones=comb.split(alfabeto["espacio"])
-
-    
 
 #validacion cardinales
 def validarCardinales(card:str):
@@ -186,14 +191,165 @@ def validarCardinales(card:str):
     else:
         return False
 
+#ListaDirecciones
+def validarDs(lst:str):
+    #Validacion de parentesis de abrir y cerrar
+    if (lst[0] is alfabeto[par1]) and (lst[-1]is alfabeto[par2]):
+        lst = lst.replace(lst[0],"")
+        lst = lst.replace(lst[-1],"")
+        #Se divide la parte interna por " "-> [dir1,...,dirn]
+        list_dir = lst.split(" ")
+        
+        for dir in  list_dir:
+            val_dir = validarCombFr_Ba_Ri_Le(dir)
+            if val_dir==False:
+                return False
+        return True   
 
 
 #Validacion de comandos
+
+#Traducciones individuales
+
+def validarSkip(list_comando:str)->bool:
+
+    if list_comando[0]==alfabeto["palabras"][-1]:
+        return True
+    else: 
+        return False
+
+def validarDefvar(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][0]:
+        # Revisa si lo siguiente es nombre " " numero
+        val1= validarCombNombre_Num(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
+def validar_igual(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][1]:
+        # Revisa si lo siguiente es nombre " " numero
+        val1= validarCombNombre_Num(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
+
+def validarMove(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][2]:
+        # Revisa si lo siguiente es nombre o numero
+        val1= validarCombNombre_O_Num(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
+def validarTurn(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][3]:
+                # Revisa si lo siguiente es Left,right,Around
+                val1= validarCombLe_Ri_Ar(list_comando[1])
+                if (val1==True):
+                    return True
+                else: 
+                    return False
+
+def validarFace(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][4]:
+            # Revisa si lo siguiente es north, south, west,east
+            val1= validarCardinales(list_comando[1])
+            if (val1==True):
+                return True
+            else: 
+                return False
+def validarPut(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][5]:
+        # Revisa si lo siguiente es Ballons/Chips" "Nombre/Numero
+        val1= validarCombBC_NamNum(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+    
+def validarPick(list_comando:str)->bool:  
+    if list_comando[0]==alfabeto["palabras"][6]:
+                # Revisa si lo siguiente es Ballons/Chips" "Nombre/Numero
+                val1= validarCombBC_NamNum(list_comando[1])
+                if (val1==True):
+                    return True
+                else: 
+                    return False
+
+
+def validarMove_dir(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][7]:
+        # Revisa si lo siguiente es Ballons/Chips" "Nombre/Numero
+        val1= validarCombNomNum_FrRiLeBa(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
+def validarRun_dirs(list_comando:str)->bool:
+    if list_comando[0]==alfabeto["palabras"][8]:
+        # Revisa si lo siguiente es Ballons/Chips" "Nombre/Numero
+        val1= validarDs(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
 def validarComando(comando:str):
-    #Validacion de parentesis
+   
+
+    #Validacion de parentesis de abrir y cerrar
     if (comando[0] is alfabeto[par1]) and (comando[-1]is alfabeto[par2]):
-        #Codigo comandos
-        a=1
+
+        #Se eliminan los paréntesis de la instruccion
+        comando = comando.replace(comando[0],"")
+        comando = comando.replace(comando[-1],"")
+        #Se divide la parte interna por " "-> [palabra,combinacion]
+        list_comando = comando.split(" ")
+
+        if len(list_comando)==1:
+            #Verificar que sea skip
+            validarSkip(list_comando)
+            
+        
+        if len(list_comando)==2:
+            #defvar
+            validarDefvar(list_comando)
+            # =
+            validar_igual(list_comando)
+            # move
+            validarMove(list_comando)
+            #turn
+            validarTurn(list_comando)
+            #face
+            validarFace(list_comando)
+            #put
+            validarPut(list_comando)
+            
+            #pick
+            validarPick(list_comando)
+            
+            #move-dir
+            validarMove_dir(list_comando)
+            
+            #run-dirs
+            
+            #move-face
+            validarMove_face(list_comando)
+
+
+            
+
+
+
+        
+
+        
     else: 
         return False
 
