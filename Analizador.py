@@ -1,5 +1,6 @@
 
 
+from fcntl import F_GETSIG
 from numpy import true_divide
 
 
@@ -658,6 +659,7 @@ def validarnot(list_condicion)->bool:
 
 #Validacion junto con parentesis
 def validarCondicion(condicion:str):
+    
    
     ok=True
     #Validacion de parentesis de abrir y cerrar
@@ -724,7 +726,71 @@ def validarCondicion(condicion:str):
     return ok
 
 ##Estructuras de Control
-def validarIf():
+def validarIf(est:str):
+    
+    #Validacion de parentesis de abrir y cerrar
+    if (est[0] is alfabeto["par1"]) and (est[-1]is alfabeto["par2"]):
+         #Se eliminan los paréntesis de la instruccion
+        condicion = condicion[1:] 
+        condicion = condicion[:len(condicion)-1]
+        #Se divide la parte interna por " "-> [palabra,combinacion]
+        lst_structura = condicion.split(" ")
+        if lst_structura[0] ==alfabeto["estructurasDeControl"][-1]:
+
+            for e in lst_structura:
+                abiertos=[]
+                cerrados=[]
+        else: 
+            return False
+
+def validarLoop(est:str):
+    pass
+
+
+
+
+
+def validarEstructura(comando:str):
+
+    if (comando[0] is alfabeto["par1"]) and (comando[-1]is alfabeto["par2"]):
+            #Se eliminan los paréntesis de la instruccion
+            comando = comando[1:] 
+            comando = comando[:len(comando)-1]
+            lst_comando = comando.split(" ")
+
+
+def validarBloque(bl):
+    ok=True
+    #Validacion de parentesis de abrir y cerrar
+    if (bl[0] is alfabeto["par1"]) and (bl[-1]is alfabeto["par2"]):
+         #Se eliminan los paréntesis de la instruccion
+        bl= bl[1:] 
+        bl = bl[:len(bl)-1]
+
+        val = validarInstruccion(bl)
+        if val ==True: 
+            return True
+        else:
+            return False
+    else: 
+        return False
+
+
+##Instruccion
+def validarInstruccion(instruccion):
+
+    val1 = validarComando(instruccion)
+    val2 = validarEstructura(instruccion)
+    val3= validarInstruccion(instruccion)
+    if val1 or val2 or val3:
+        return True
+    else: 
+        return False
+
+
+    
+
+     
 
 
 
@@ -734,6 +800,7 @@ def probarparentesis(comando:str)->bool:
 
     
     if (comando[0] is alfabeto["par1"]) and (comando[-1]is alfabeto["par2"]):
+        
        print("Tiene ambos parentesis")
         
     else: 
