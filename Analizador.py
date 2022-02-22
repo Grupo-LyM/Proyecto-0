@@ -4,7 +4,7 @@ from numpy import true_divide
 
 
 def listaInstrucciones():
-    print("Bienvenido a el analizador.")
+    print("Bienvenido al analizador.")
     ruta = input("Escriba la ruta ESPECIFICA del archivo :")
     archivo = open(str(ruta),"r")
 
@@ -12,41 +12,44 @@ def listaInstrucciones():
 
 
     hayLinea = True
-    prov=""
-    while(hayLinea==True):
-        pila_abrir=[]
-        pila_cerrar=[]
-        linea = archivo.readline()
+ 
+    pila_abrir=[]
+    pila_cerrar=[]
+    continuar=True
+    prov = ""
+    while hayLinea:
+        
 
-        if linea:
-            if len(linea)==0:
-                pass
+        if archivo.readline():
+            linea = prov +archivo.readline()
+            print(linea)
+            
+
+            for caracter in linea:
+                if caracter == "(":
+                    pila_abrir.append(caracter)
+                elif caracter == ")":
+                    pila_cerrar.append(caracter)
+
+            if len(pila_abrir) == len(pila_cerrar):
+                lst_instrucciones.append(linea)
+                prov=""
+                pila_cerrar=[]
+                pila_abrir=[]
+ 
             else: 
-                for caracter in linea:
-                    if caracter == "(":
-                        pila_abrir.append(caracter)
-                    elif caracter == ")":
-                        pila_cerrar.append(caracter)
-                if len(pila_abrir) == len(pila_cerrar):
-                    lst_instrucciones.append(linea)
-                    if len(prov)!=0:
-                        prov=""
-                else:
-                    print("juntar")
-                    
-                    prov+=linea
-                    print(prov)
-                    pass
-
-               
-
+                prov = linea
+                continuar = True
         else:
-            hayLinea =  False
+            hayLinea=False
 
+
+    
     archivo.close()
 
     
     return lst_instrucciones
+
 
 print(listaInstrucciones())
 
