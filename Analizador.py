@@ -3,17 +3,66 @@
 from numpy import true_divide
 
 
+def listaInstrucciones():
+    print("Bienvenido a el analizador.")
+    ruta = input("Escriba la ruta ESPECIFICA del archivo :")
+    archivo = open(str(ruta),"r")
+
+    lst_instrucciones=[]
+
+
+    hayLinea = True
+    prov=""
+    while(hayLinea==True):
+        pila_abrir=[]
+        pila_cerrar=[]
+        linea = archivo.readline()
+
+        if linea:
+            if len(linea)==0:
+                pass
+            else: 
+                for caracter in linea:
+                    if caracter == "(":
+                        pila_abrir.append(caracter)
+                    elif caracter == ")":
+                        pila_cerrar.append(caracter)
+                if len(pila_abrir) == len(pila_cerrar):
+                    lst_instrucciones.append(linea)
+                    if len(prov)!=0:
+                        prov=""
+                else:
+                    print("juntar")
+                    
+                    prov+=linea
+                    print(prov)
+                    pass
+
+               
+
+        else:
+            hayLinea =  False
+
+    archivo.close()
+
+    
+    return lst_instrucciones
+
+print(listaInstrucciones())
+
+
 def menu():
     print("Bienvenido a el analizador.")
     ruta = input("Escriba la ruta ESPECIFICA del archivo :")
     archivo = open(str(ruta),"r")
     lineas = archivo.readlines()
+    
     archivo.close()
 
     print(lineas)
     return lineas
 
-lineas = menu()
+#lineas = menu()
 
 digitos = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 letras = ["_","a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G" , "H", "I", "J", "K", "L", "M", "N" ,"O", "P", "Q", "R", "S" , "T", "U", "V" , "W", "X", "Y" , "Z" , "ñ", "Ñ"]
@@ -659,7 +708,7 @@ def probarparentesis(comando:str)->bool:
         
     else: 
         print("bla bla bla")
-
+"""
 def probarcomandos():
     print("Vamooos")
     for e in lineas:
@@ -670,4 +719,5 @@ def probarcomandos():
         
 
 probarcomandos()
+"""
 
