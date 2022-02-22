@@ -58,8 +58,6 @@ def menu():
     lineas = archivo.readlines()
     
     archivo.close()
-
-    print(lineas)
     return lineas
 
 #lineas = menu()
@@ -100,6 +98,48 @@ tokenIgnorar = "\n"
 """La validacion se genera 
 true: es valido
 false: no es valido-> generar error"""
+
+#Reconocimiento de bloques
+def reconocerBloques():
+    size = len(lineas)
+    i = 0
+
+    bloques = []
+    visitados = []
+    while i <= size:
+        if i not in visitados:
+            line = lineas[i]
+            numApertura = 0
+            numCierre = 0
+            numApertura, numCierre = contarParentesis(line, numApertura, numCierre)
+            block = []
+            block.append(line)
+            visitados.append(i)
+
+            if numApertura != numCierre:
+                while numApertura != numCierre:
+                    i += 1
+                    linean = lineas[i]
+                    numApertura, numCierre = contarParentesis(linean, numApertura, numCierre)
+                    block.append(linean)
+                    visitados.append(i)
+            
+        else:
+            pass
+        bloques.append(block)
+    
+    return bloques
+
+        
+        
+
+def contarParentesis(line:str, numApertura:int, numCierre:int):
+    for ele in line:
+        if ele == "(":
+            numApertura += 1
+        elif ele == ")":
+            numCierre += 1
+    return numApertura, numCierre
 
 #Valida una letra si esta en el diccionario de letras
 def validarLetra(l:str)-> bool:
@@ -558,6 +598,10 @@ def validarComando(comando:str):
     
 
 #Validacion de condiciones
+
+
+#Validacion de estructura de control
+
 
 #Traducciones individuales
 def validarFacing_p(list_condicion)->bool:
