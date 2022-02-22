@@ -1,6 +1,1 @@
-(defvar hello 54567)
-(defvar 34234hel 23)
-(defvar 34234hel 2er3)
-= name 456)
-(= jd[] 34un)
-(= jd[] 3487
+(move-face efefsfd34243e :north>)
