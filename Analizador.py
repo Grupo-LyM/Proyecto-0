@@ -9,8 +9,6 @@ def menu():
     archivo = open(str(ruta),"r")
     lineas = archivo.readlines()
     archivo.close()
-
-    print(lineas)
     return lineas
 
 lineas = menu()
@@ -51,6 +49,48 @@ tokenIgnorar = "\n"
 """La validacion se genera 
 true: es valido
 false: no es valido-> generar error"""
+
+#Reconocimiento de bloques
+def reconocerBloques():
+    size = len(lineas)
+    i = 0
+
+    bloques = []
+    visitados = []
+    while i <= size:
+        if i not in visitados:
+            line = lineas[i]
+            numApertura = 0
+            numCierre = 0
+            numApertura, numCierre = contarParentesis(line, numApertura, numCierre)
+            block = []
+            block.append(line)
+            visitados.append(i)
+
+            if numApertura != numCierre:
+                while numApertura != numCierre:
+                    i += 1
+                    linean = lineas[i]
+                    numApertura, numCierre = contarParentesis(linean, numApertura, numCierre)
+                    block.append(linean)
+                    visitados.append(i)
+            
+        else:
+            pass
+        bloques.append(block)
+    
+    return bloques
+
+        
+        
+
+def contarParentesis(line:str, numApertura:int, numCierre:int):
+    for ele in line:
+        if ele == "(":
+            numApertura += 1
+        elif ele == ")":
+            numCierre += 1
+    return numApertura, numCierre
 
 #Valida una letra si esta en el diccionario de letras
 def validarLetra(l:str)-> bool:
@@ -375,6 +415,10 @@ def validarComando(comando:str):
 
 #Validacion de condiciones
 
+
+#Validacion de estructura de control
+
+
 #Traducciones individuales
 def validarFacing_p(list_condicion)->bool:
     if list_condicion[0]==alfabeto["condiciones"][0]:
@@ -401,31 +445,5 @@ def validarCondicion(condicion:str):
         validarFacing_p(list_condicion)
 
 #####Pruebas
-def probarparentesis(comando:str)->bool:
-
-    
-    if (comando[0] is alfabeto["par1"]) and (comando[-1]is alfabeto["par2"]):
-       print("Tiene ambos parentesis")
-        
-    else: 
-        print("bla bla bla")
-
-def probarcomandos():
-        
-    for e in lineas:
-        
-        e = e.replace("\n","")
-        "Vamoooos"
-        validarComando(e)
-        
-
-probarcomandos()
-
-
-
-
-
-
-
-
-print(alfabeto["par1"], alfabeto["par2"])
+bloques = reconocerBloques()
+print(bloques)
