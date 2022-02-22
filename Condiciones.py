@@ -1,6 +1,9 @@
-from Analizador import alfabeto
-from Analizador import validarCardinales
-from Analizador import validarCombBC_NamNum
+from alfabeto import alfabeto
+from combinaciones import validarCardinales
+from combinaciones import validarCombBC_NamNum
+
+#Validacion de condiciones
+
 
 #Traducciones individuales
 def validarFacing_p(list_condicion)->bool:
@@ -72,8 +75,7 @@ def validarnot(list_condicion)->bool:
 
 #Validacion junto con parentesis
 def validarCondicion(condicion:str):
-    
-   
+
     ok=True
     #Validacion de parentesis de abrir y cerrar
     if (condicion[0] is alfabeto["par1"]) and (condicion[-1]is alfabeto["par2"]):
@@ -85,9 +87,7 @@ def validarCondicion(condicion:str):
         print(condicion)
         #Se divide la parte interna por " "-> [palabra,combinacion]
         lst_condicion = condicion.split(" ")
-        print("condddd")
-        print(lst_condicion)
-        print("condddd")
+        
 
         if  len(lst_condicion)==2:
 
