@@ -741,7 +741,8 @@ def validarCondicion(condicion:str):
         ok=False
     return ok
 
-
+##Estructuras de Control
+def validarIf():
 
 
 
