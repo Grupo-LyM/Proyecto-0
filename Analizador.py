@@ -52,34 +52,16 @@ false: no es valido-> generar error"""
 
 #Reconocimiento de bloques
 def reconocerBloques():
-    size = len(lineas)
     i = 0
+    size = len(lineas)
 
-    bloques = []
-    visitados = []
     while i <= size:
-        if i not in visitados:
-            line = lineas[i]
-            numApertura = 0
-            numCierre = 0
-            numApertura, numCierre = contarParentesis(line, numApertura, numCierre)
-            block = []
-            block.append(line)
-            visitados.append(i)
+        line = lineas[i]
+        apertura = 0
+        cierre = 0
+        lineaApertura, lineaCierre = contarParentesis(line, apertura, cierre)
 
-            if numApertura != numCierre:
-                while numApertura != numCierre:
-                    i += 1
-                    linean = lineas[i]
-                    numApertura, numCierre = contarParentesis(linean, numApertura, numCierre)
-                    block.append(linean)
-                    visitados.append(i)
-            
-        else:
-            pass
-        bloques.append(block)
-    
-    return bloques
+        
 
         
         
