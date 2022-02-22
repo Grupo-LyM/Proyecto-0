@@ -848,11 +848,6 @@ def validardeffuncion(est:str):
             return False
 
 
-
-
-
-
-
 def validarEstructura(comando:str):
 
     if (comando[0] is alfabeto["par1"]) and (comando[-1]is alfabeto["par2"]):
@@ -931,4 +926,6 @@ def probarcomandos():
 
 probarcomandos()
 """
+#De este código funciona perfectamente la validacion de comandos, nombres y estructuras básicas
+#las estruturas presentan inconvenientes en la recursion para la validacion
 
