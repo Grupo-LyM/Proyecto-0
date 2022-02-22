@@ -1,7 +1,9 @@
 
 
 from fcntl import F_GETSIG
+from tkinter.tix import Tree
 from numpy import true_divide
+from wcwidth import list_versions
 
 
 def listaInstrucciones():
@@ -659,8 +661,7 @@ def validarnot(list_condicion)->bool:
 
 #Validacion junto con parentesis
 def validarCondicion(condicion:str):
-    
-   
+
     ok=True
     #Validacion de parentesis de abrir y cerrar
     if (condicion[0] is alfabeto["par1"]) and (condicion[-1]is alfabeto["par2"]):
@@ -726,25 +727,127 @@ def validarCondicion(condicion:str):
     return ok
 
 ##Estructuras de Control
+def validarCondicionBloques(string:str):
+    #Valida Condiciones Bloques
+    val1 = validarCondicion(string)
+    val2 = validarBloque(string)
+
+    if val1 or val2:
+        return True
+    else: 
+        return False
+    
+def validarNomNum_Bl(string:str):
+    #Valida Condiciones Bloques
+    val1 = validarCombNombre_O_Num(string)
+    val2 = validarBloque(string)
+
+    if val1 or val2:
+        return True
+    else: 
+        return False
+def validarParametros(lst:str):
+     #Validacion de parentesis de abrir y cerrar
+    if (lst[0] is alfabeto["par1"]) and (lst[-1]is alfabeto["par2"]):
+        lst = lst.replace(lst[0],"")
+        lst = lst.replace(lst[-1],"")
+        #Se divide la parte interna por " "-> [dir1,...,dirn]
+        list_dir = lst.split(" ")
+        print(lst)
+        for dir in  list_dir:
+            val_dir = validarNombre(dir)
+            if val_dir==False:
+                return False
+        return True   
+    else:
+        return False
+
+
 def validarIf(est:str):
     
     #Validacion de parentesis de abrir y cerrar
     if (est[0] is alfabeto["par1"]) and (est[-1]is alfabeto["par2"]):
          #Se eliminan los paréntesis de la instruccion
-        condicion = condicion[1:] 
-        condicion = condicion[:len(condicion)-1]
+        est = est[1:] 
+        est = est[:len(est)-1]
         #Se divide la parte interna por " "-> [palabra,combinacion]
-        lst_structura = condicion.split(" ")
-        if lst_structura[0] ==alfabeto["estructurasDeControl"][-1]:
+        lst_structura = est.split(" ")
+        if lst_structura[0] ==alfabeto["estructurasDeControl"][3]:
 
-            for e in lst_structura:
-                abiertos=[]
-                cerrados=[]
+            lst_structura.remove(lst_structura[0])
+            val = validarCondicionBloques(lst_structura)
+            if val:
+                return True
+            else:
+                return False
         else: 
             return False
 
 def validarLoop(est:str):
-    pass
+    #Validacion de parentesis de abrir y cerrar
+    if (est[0] is alfabeto["par1"]) and (est[-1]is alfabeto["par2"]):
+         #Se eliminan los paréntesis de la instruccion
+        est = est[1:] 
+        est = est[:len(est)-1]
+        #Se divide la parte interna por " "-> [palabra,combinacion]
+        lst_structura = est.split(" ")
+        if lst_structura[0] ==alfabeto["estructurasDeControl"][0]:
+
+            lst_structura.remove(lst_structura[0])
+            val1 = validarCondicionBloques(lst_structura)
+            val2= validarBloque(lst_structura)
+            if val1 and val2:
+                return True
+            else:
+                return False
+        else: 
+            return False
+
+def validarRepeat(est:str):
+    #Validacion de parentesis de abrir y cerrar
+    if (est[0] is alfabeto["par1"]) and (est[-1]is alfabeto["par2"]):
+         #Se eliminan los paréntesis de la instruccion
+        est = est[1:] 
+        est = est[:len(est)-1]
+        #Se divide la parte interna por " "-> [palabra,combinacion]
+        lst_structura = est.split(" ")
+        if lst_structura[0] ==alfabeto["estructurasDeControl"][1]:
+
+            lst_structura.remove(lst_structura[0])
+            val1 = validarNomNum_Bl(lst_structura)
+            
+            if val1 :
+                return True
+            else:
+                return False
+        else: 
+            return False
+            
+
+def validardeffuncion(est:str):
+    #Validacion de parentesis de abrir y cerrar
+    if (est[0] is alfabeto["par1"]) and (est[-1]is alfabeto["par2"]):
+         #Se eliminan los paréntesis de la instruccion
+        est = est[1:] 
+        est = est[:len(est)-1]
+        #Se divide la parte interna por " "-> [palabra,combinacion]
+        lst_structura = est.split(" ")
+        if lst_structura[0] ==alfabeto["estructurasDeControl"][2]:
+
+            lst_structura.remove(lst_structura[0])
+
+            val1 = validarNombre(lst_structura)
+            val2= validarParametros(lst_structura)
+            val3= validarBloque(lst_structura)
+
+            if val1 and val2 and val3 :
+                return True
+            else:
+                return False
+        else: 
+            return False
+
+
 
 
 
@@ -756,7 +859,18 @@ def validarEstructura(comando:str):
             #Se eliminan los paréntesis de la instruccion
             comando = comando[1:] 
             comando = comando[:len(comando)-1]
-            lst_comando = comando.split(" ")
+            
+            val1 = validarIf(comando)
+            val2 = validarLoop(comando)
+            val3 = validarRepeat(comando)
+            val4 = validardeffuncion(comando)
+            if val1 or val2 or val3 or val4:
+                return True
+            else: 
+                return False
+
+    else: 
+        return False
 
 
 def validarBloque(bl):
