@@ -11,8 +11,9 @@ def menu():
     archivo.close()
 
     print(lineas)
+    return lineas
 
-menu()
+lineas = menu()
 
 digitos = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 letras = ["_","a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G" , "H", "I", "J", "K", "L", "M", "N" ,"O", "P", "Q", "R", "S" , "T", "U", "V" , "W", "X", "Y" , "Z" , "ñ", "Ñ"]
@@ -31,8 +32,8 @@ alfabeto = {"digitos":digitos,
             "letras":letras,
             "cardinales":cardinales,
             "giro":giro,
-            "par1":par1,
-            "par2":par2,
+            "par1":"(",
+            "par2":")",
             "palabras":palabras,
             "BalChips":BalChips,
             "estructurasDeControl":estructurasDeControl,
@@ -132,9 +133,10 @@ def validarCombBal_O_Chips(comb:str)->bool:
     else: 
         return False
 
+#Estructura del alfabeto["giro"]
 #giro = [":front" ,":back",  ":left" , ":right",":around"]
 
-#Validacion left right around
+#Validacion left/right/around
 def validarCombLe_Ri_Ar(comb:str)->bool:
     #   ojo revisar el slice
     if comb in alfabeto[giro[2:]]:
@@ -142,7 +144,7 @@ def validarCombLe_Ri_Ar(comb:str)->bool:
     else:
         return False
 
-#Validacion front back right left
+#Validacion front/back/right/left
 def validarCombFr_Ba_Ri_Le(comb:str)->bool:
     if comb in alfabeto[giro[:4]]:
         return True
@@ -174,6 +176,7 @@ def validarCombNomNum_FrRiLeBa(comb:str)->bool:
         #Valida si lo de la izquierda es Nom/Num y si derecha es FrRiLeBa
         val1 =validarCombNombre_O_Num(spaceSplit[0])
         val2 = validarCombFr_Ba_Ri_Le(spaceSplit[1])
+
 #Valida si lo de la izquierda es Nom/Num y si derecha es FrRiLeBa si lo es True
         if (val1 ==True) and (val2==True):
                 return True
@@ -190,6 +193,23 @@ def validarCardinales(card:str):
         return True
     else:
         return False
+
+#Validacion si es Nom/num" "cardinal
+def validarCombNomNum_Cardinal(comb:str):
+    spaceSplit = comb.split(" ")
+    if (len(spaceSplit)==2):
+        #Valida si lo de la izquierda es Nom/Num y si derecha es FrRiLeBa
+        val1 =validarCombNombre_O_Num(spaceSplit[0])
+        val2 = validarCardinales(spaceSplit[1])
+#Valida si lo de la izquierda es Nom/Num y si derecha es FrRiLeBa si lo es True
+        if (val1 ==True) and (val2==True):
+                return True
+        else: 
+            return False
+
+    else: 
+        return False
+
 
 #ListaDirecciones
 def validarDs(lst:str):
@@ -299,12 +319,23 @@ def validarRun_dirs(list_comando:str)->bool:
             return True
         else: 
             return False
+def validarMove_face(list_comando:str)->bool:
 
+    if list_comando[0]==alfabeto["palabras"][9]:
+        # Revisa si lo siguiente es Ballons/Chips" "Nombre/Numero
+        val1= validarCombNomNum_Cardinal(list_comando[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
+
+#Validacion de todo tipo de comando 
 def validarComando(comando:str):
    
 
     #Validacion de parentesis de abrir y cerrar
-    if (comando[0] is alfabeto[par1]) and (comando[-1]is alfabeto[par2]):
+    if (comando[0] is alfabeto["par1"]) and (comando[-1]is alfabeto["par2"]):
 
         #Se eliminan los paréntesis de la instruccion
         comando = comando.replace(comando[0],"")
@@ -312,11 +343,12 @@ def validarComando(comando:str):
         #Se divide la parte interna por " "-> [palabra,combinacion]
         list_comando = comando.split(" ")
 
+        #Verificacion de listas de tamaño 1
         if len(list_comando)==1:
             #Verificar que sea skip
             validarSkip(list_comando)
             
-        
+        #Verificacion de listas de tamaño 2
         if len(list_comando)==2:
             #defvar
             validarDefvar(list_comando)
@@ -330,26 +362,70 @@ def validarComando(comando:str):
             validarFace(list_comando)
             #put
             validarPut(list_comando)
-            
             #pick
             validarPick(list_comando)
-            
             #move-dir
             validarMove_dir(list_comando)
-            
             #run-dirs
-            
+            validarRun_dirs(list_comando)
             #move-face
-            validarMove_face(list_comando)
-
-
-            
-
-
-
-        
-
-        
+            validarMove_face(list_comando)   
     else: 
         return False
 
+#Validacion de condiciones
+
+#Traducciones individuales
+def validarFacing_p(list_condicion)->bool:
+    if list_condicion[0]==alfabeto["condiciones"][0]:
+    # Revisa si lo siguiente es cardinal
+        val1= validarCardinales(list_condicion[1])
+        if (val1==True):
+            return True
+        else: 
+            return False
+
+#Validacion junto con parentesis
+def validarCondicion(condicion:str):
+   
+
+    #Validacion de parentesis de abrir y cerrar
+    if (condicion[0] is alfabeto["par1"]) and (condicion[-1]is alfabeto["par2"]):
+
+        #Se eliminan los paréntesis de la instruccion
+        condicion = condicion.replace(condicion[0],"")
+        condicion = condicion.replace(condicion[-1],"")
+        #Se divide la parte interna por " "-> [palabra,combinacion]
+        list_condicion = condicion.split(" ")
+
+        validarFacing_p(list_condicion)
+
+#####Pruebas
+def probarparentesis(comando:str)->bool:
+
+    
+    if (comando[0] is alfabeto["par1"]) and (comando[-1]is alfabeto["par2"]):
+       print("Tiene ambos parentesis")
+        
+    else: 
+        print("bla bla bla")
+
+def probarcomandos():
+        
+    for e in lineas:
+        
+        e = e.replace("\n","")
+        "Vamoooos"
+        validarComando(e)
+        
+
+probarcomandos()
+
+
+
+
+
+
+
+
+print(alfabeto["par1"], alfabeto["par2"])

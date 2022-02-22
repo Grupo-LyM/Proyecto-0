@@ -1,8 +1,6 @@
-hola
-Hola
-123hola
-h234l
-hol2345
-{wwerwed}
-231432143124
-1323123213
+(defvar hello 54567)
+(defvar 34234hel 23)
+(defvar 34234hel 2er3)
+= name 456)
+(= jd[] 34un)
+(= jd[] 3487
