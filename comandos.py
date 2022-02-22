@@ -1,4 +1,4 @@
-from Analizador import alfabeto
+from alfabeto import alfabeto
 from combinaciones import validarCombNombre_Num
 from combinaciones import validarCombNombre_O_Num
 from combinaciones import validarCombLe_Ri_Ar
