@@ -1,1 +1,1 @@
-(move-face efefsfd34243e :north>)
+(not (not (can-move-p :south)))
